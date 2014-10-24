@@ -92,7 +92,7 @@ animateTitle()
   <svg id="title2" height="200" width="1000" xmlns="http://www.w3.org/2000/svg" version="1.1" >
     <defs>
     <clipPath id="path2">
-    <text x="0" y="190" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-weight="800" font-size="200px" >Big Data</text>
+    <text x="0" y="150" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-weight="800" font-size="200px" >Big Data</text>
     </clipPath>
     </defs>
     <image clip-path="url(#path2)" height="100%" width="100%" xlink:href="img/header2.jpg" />
@@ -100,7 +100,7 @@ animateTitle()
 </div>
 
 <script type="text/coffeescript">
-animateTufte = (id, clipId) ->
+animateBig = (id, clipId) ->
   svg = d3.select(id)
   bw = 20
   width = svg.attr("width") - bw
@@ -159,7 +159,7 @@ animateTufte = (id, clipId) ->
 
   animate()
 
-animateTufte("#title2", "#path2")
+animateBig("#title2", "#path2")
 </script>
 
     </div>
