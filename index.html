@@ -1,79 +1,191 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Aniclip : ">
+  <title>Animated Clipping Paths</title>
+  <meta name="description" content="">
+  <meta name="author" content="Jim Vallandingham">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Aniclip</title>
-  </head>
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,800,900' rel='stylesheet' type='text/css'>
 
-  <body>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/modernizr-2.0.6.min.js"></script>
+  <script src="js/coffee-script.js"></script>
+  <script src="js/d3.js"></script>
+  <script src="js/scripts.js"></script>
+</head>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/vlandham/aniclip">View on GitHub</a>
+<body>
 
-          <h1 id="project_title">Aniclip</h1>
-          <h2 id="project_tagline"></h2>
+  <div id="container" class="container">
+    <div id="main" class="row" role="main">
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/vlandham/aniclip/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/vlandham/aniclip/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+      <div class="title">
+        <svg id="titleSvg" height="200" width="1000" xmlns="http://www.w3.org/2000/svg" version="1.1" >
+          <defs>
+          <clipPath id="topPath">
+          <text x="0" y="140" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-size="140px" font-weight="800" fill="white">Data Visualization</text>
+          </clipPath>
+          </defs>
+          <image clip-path="url(#topPath)" height="100%" width="100%" xlink:href="img/header1.jpg" />
+          <!-- <text opacity="0.4" x="0" y="140" textLength="960" lengthAdjust="spacing" font-family="Vollkorn" font-size="140px" font-weight="700" >Data Visualization</text> -->
+        </svg>
+      </div>
+
+      <script type="text/coffeescript">
+animateTitle = () ->
+  svg = d3.select("#titleSvg")
+  width = svg.attr("width")
+  height = svg.attr("height")
+  console.log(height)
+  m = 40
+  r = 6
+  data = bumpLayer(m, 0.1)
+  xScale = d3.scale.ordinal()
+    .domain(d3.range(m))
+    .rangeRoundBands([0, width], .08)
+  yMax = d3.max(data, (d) -> d.y)
+  yScale = d3.scale.linear()
+    .domain([0, yMax])
+    .range([(height / 2 ) - r, r])
+
+  svg.select("#topPath").selectAll('circle').data(data)
+    .enter().append("circle")
+    .attr("cx", (d) -> xScale(d.x))
+    .attr("cy", (d) -> yScale(d.y))
+    .attr("r", r)
+    # .attr("x", (d) -> xScale(d.x))
+    # .attr("y", 0)
+    # .attr("opacity", 0.4)
+    # .attr("height", (d) -> yScale(d.y))
+    # .attr("width", xScale.rangeBand())
+  animate = () ->
+    data = bumpLayer(m, 0.1)
+    yMax = d3.max(data, (d) -> d.y)
+    yScale.domain([0,yMax])
+
+    svg.select("#topPath").selectAll("circle").data(data)
+      .transition()
+      .duration(3000)
+      .delay((d,i) -> i * 10)
+      .ease("linear")
+      .attr("cy", (d) -> yScale(d.y))
+    timeout = setTimeout(animate, 3000)
+
+  animate()
+
+animateTitle()
+
+</script>
+
+
+<div class="title">
+  <svg id="title2" height="200" width="1000" xmlns="http://www.w3.org/2000/svg" version="1.1" >
+    <defs>
+    <clipPath id="path2">
+    <text x="0" y="190" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-weight="800" font-size="200px" >Big Data</text>
+    </clipPath>
+    </defs>
+    <image clip-path="url(#path2)" height="100%" width="100%" xlink:href="img/header2.jpg" />
+  </svg>
+</div>
+
+<script type="text/coffeescript">
+animateTufte = (id, clipId) ->
+  svg = d3.select(id)
+  bw = 20
+  width = svg.attr("width") - bw
+  height = svg.attr("height") - bw
+
+  data = []
+  i = 0
+  n = 10
+  while i < n
+    data.push({x:getRandomInt(0,width),y:getRandomInt(0,height), dir:Math.random() > 0.4})
+    i += 1
+  svg.selectAll(".outline").data(data)
+    .enter().append("rect")
+    .attr("class", "outline")
+    .attr("width", bw)
+    .attr("height", bw)
+    .attr('x', (d) -> d.x)
+    .attr('y', (d) -> d.y)
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", 2)
+    .attr("stroke-opacity", 0.7)
+
+  svg.select(clipId).selectAll("rect").data(data)
+    .enter().append("rect")
+    .attr("width", bw)
+    .attr("height", bw)
+    .attr('x', (d) -> d.x)
+    .attr('y', (d) -> d.y)
+
+
+  animate = () ->
+    data.forEach (d) ->
+      if d.dir
+        d.x = getRandomInt(0, width)
+      else
+        d.y = getRandomInt(0, height)
+      d.dir = if d.dir then false else true
+
+    svg.select(clipId).selectAll("rect").data(data)
+      .transition()
+      .duration(3000)
+      .delay((d,i) -> i * 10)
+      .ease("linear")
+      .attr("x", (d) -> d.x)
+      .attr("y", (d) -> d.y)
+
+    svg.selectAll(".outline").data(data)
+      .transition()
+      .duration(3000)
+      .delay((d,i) -> i * 10)
+      .ease("linear")
+      .attr("x", (d) -> d.x)
+      .attr("y", (d) -> d.y)
+    timeout = setTimeout(animate, 3000)
+
+  animate()
+
+animateTufte("#title2", "#path2")
+</script>
+
     </div>
+     <footer>
+    </footer>
+  </div> <!--! end of #container -->
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+  <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+  <script> 
+    window._gaq = [['_setAccount','UA-17355070-1'],['_trackPageview'],['_trackPageLoadTime']];
+    Modernizr.load({
+    load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+  </script>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+  <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+  <![endif]-->
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Aniclip maintained by <a href="https://github.com/vlandham">vlandham</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+</body>
 </html>
+
+
+
