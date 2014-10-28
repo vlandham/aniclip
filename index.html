@@ -33,7 +33,7 @@
         <svg id="titleSvg" height="200" width="1000" xmlns="http://www.w3.org/2000/svg" version="1.1" >
           <defs>
           <clipPath id="topPath">
-          <text x="0" y="140" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-size="140px" font-weight="800" fill="white">Data Visualization</text>
+          <text x="0" y="180" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-size="140px" font-weight="800" fill="white">Data Visualization</text>
           </clipPath>
           </defs>
           <image clip-path="url(#topPath)" height="100%" width="100%" xlink:href="img/header1.jpg" />
@@ -59,7 +59,7 @@ animateTitle = () ->
   yMax = d3.max(data, (d) -> d.y)
   yScale = d3.scale.linear()
     .domain([0, yMax])
-    .range([(height / 2 ) - r, r])
+    .range([(height / 1 ) - r, r])
 
   svg.select("#topPath").selectAll('circle').data(data)
     .enter().append("circle")
@@ -154,9 +154,9 @@ animateBig = (id, clipId) ->
   animate = () ->
     data.forEach (d) ->
       if d.dir
-        d.x = getRandomInt(0, width)
+        d.x = getRandomInt(bw, (width - bw))
       else
-        d.y = getRandomInt(0, height)
+        d.y = getRandomInt(bw, (height - bw))
       d.dir = if d.dir then false else true
 
     svg.select(clipId).selectAll("rect").data(data)
@@ -189,8 +189,8 @@ animateBig = (id, clipId) ->
 
 animateBig("#title2", "#path2")
 </script>
-
-<p>These things are even responsive! Check out this page on your mobile.</p>
+<p>A <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath">clipping path</a> is applied to a background image, so only the text shows through. Then shapes are added to the clipping path and animated for fun.</p>
+<p>These things are even responsive! Check out this page from your mobile.</p>
 
 <div class="title">
   <svg id="title3" height="200" width="1000" xmlns="http://www.w3.org/2000/svg" version="1.1" >
@@ -204,7 +204,7 @@ animateBig("#title2", "#path2")
   </svg>
 </div>
 
-<p>But, they really rev up my machine. I wouldn't stay on this page too long if you want your battery to last.</p>
+<p>But, they really rev up my machine. I wouldn't stay on this page too long if you want your battery to last. Future improvements include only animating if the SVG is on screen and disabling after a few iterations.</p>
 
 <script type="text/coffeescript">
 animateCircle = (id, clipId) ->
