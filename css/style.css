@@ -3,51 +3,22 @@ body, input {
   font-family: Georgia, Times, "Times New Roman", serif;
 }
 
-/* body .container { */
-/*   min-height: 100%; */
-/*   position: relative; */
-/*   margin: 0; */
-/*   font-size: 2.2rem; */
-/* } */
 
 body .container {
   font-family: "freight-text-pro",Georgia,Cambria,"Times New Roman",Times,serif;
   letter-spacing: 0.01rem;
   font-weight: 400;
   font-style: normal;
-  font-size: 22px;
-  line-height: 1.5;
 }
 
 
 p, ul, ol, blockquote, img {
-  margin: 2rem 0;
+  padding-left:10px;
+  padding-right:10px;
 }
 
-.container {
-  /* margin: 3rem auto; */
-  line-height: 3.5rem;
-}
-
-.title text {
-  font-family: 'Raleway', sans-serif;
-  font-weight: 800;
-}
 
 .title {
   position: relative;
-  cursor: pointer;
 }
 
-.title button {
-cursor: pointer;
-position: absolute;
-padding: 5px 10px;
-border-radius: 5px;
-border: solid 1px #ccc;
-color: #333;
-background: #fff;
-bottom: 20px;
-left: 20px;
-}
-  

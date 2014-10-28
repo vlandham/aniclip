@@ -46,9 +46,12 @@ animateTitle = () ->
   svg = d3.select("#titleSvg")
   width = svg.attr("width")
   height = svg.attr("height")
+  aspect = width / height
+  svg.attr("viewBox", "0 0 #{width} #{height}")
+  svg.attr("preserveAspectRatio", "xMidYMid")
   console.log(height)
   m = 40
-  r = 6
+  r = 8
   data = bumpLayer(m, 0.1)
   xScale = d3.scale.ordinal()
     .domain(d3.range(m))
@@ -76,6 +79,7 @@ animateTitle = () ->
     svg.select("#topPath").selectAll("circle").data(data)
       .transition()
       .duration(3000)
+      .ease("sin-in")
       .delay((d,i) -> i * 10)
       .ease("linear")
       .attr("cy", (d) -> yScale(d.y))
@@ -83,10 +87,20 @@ animateTitle = () ->
 
   animate()
 
+  resize = () ->
+    p = svg.node().parentNode
+    targetWidth = +d3.select(p).style("width").replace("px","")
+
+    svg.attr("width", targetWidth)
+    svg.attr("height", targetWidth / aspect)
+
+  resize()
+
 animateTitle()
 
 </script>
 
+<p>Sometimes, you just want to make something flashy, right? How about some animated clipping paths to jazz things up?<p>
 
 <div class="title">
   <svg id="title2" height="200" width="1000" xmlns="http://www.w3.org/2000/svg" version="1.1" >
@@ -103,15 +117,20 @@ animateTitle()
 animateBig = (id, clipId) ->
   svg = d3.select(id)
   bw = 20
-  width = svg.attr("width") - bw
-  height = svg.attr("height") - bw
+  width = svg.attr("width")
+  height = svg.attr("height")
+
+  aspect = width / height
+  svg.attr("viewBox", "0 0 #{width} #{height}")
+  svg.attr("preserveAspectRatio", "xMidYMid")
 
   data = []
   i = 0
-  n = 10
+  n = 20
   while i < n
     data.push({x:getRandomInt(0,width),y:getRandomInt(0,height), dir:Math.random() > 0.4})
     i += 1
+
   svg.selectAll(".outline").data(data)
     .enter().append("rect")
     .attr("class", "outline")
@@ -144,7 +163,7 @@ animateBig = (id, clipId) ->
       .transition()
       .duration(3000)
       .delay((d,i) -> i * 10)
-      .ease("linear")
+      .ease("exp-out")
       .attr("x", (d) -> d.x)
       .attr("y", (d) -> d.y)
 
@@ -152,14 +171,94 @@ animateBig = (id, clipId) ->
       .transition()
       .duration(3000)
       .delay((d,i) -> i * 10)
-      .ease("linear")
+      .ease("exp-out")
       .attr("x", (d) -> d.x)
       .attr("y", (d) -> d.y)
     timeout = setTimeout(animate, 3000)
 
   animate()
 
+  resize = () ->
+    p = svg.node().parentNode
+    targetWidth = +d3.select(p).style("width").replace("px","")
+
+    svg.attr("width", targetWidth)
+    svg.attr("height", targetWidth / aspect)
+
+  resize()
+
 animateBig("#title2", "#path2")
+</script>
+
+<p>These things are even responsive! Check out this page on your mobile.</p>
+
+<div class="title">
+  <svg id="title3" height="200" width="1000" xmlns="http://www.w3.org/2000/svg" version="1.1" >
+    <defs>
+    <clipPath id="path3">
+    <text x="0" y="170" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-weight="800" font-size="200px" >Small Data</text>
+    </clipPath>
+    </defs>
+    <image clip-path="url(#path3)" height="100%" width="100%" xlink:href="img/header3.jpg" />
+    <text id='bigtext' x="0" y="170" textLength="960" lengthAdjust="spacing" font-family="Raleway" font-weight="800" font-size="200px" fill="white" opacity="0.7" >Small Data</text>
+  </svg>
+</div>
+
+<p>But, they really rev up my machine. I wouldn't stay on this page too long if you want your battery to last.</p>
+
+<script type="text/coffeescript">
+animateCircle = (id, clipId) ->
+  svg = d3.select(id)
+  bw = 20
+  width = svg.attr("width")
+  height = svg.attr("height")
+
+  aspect = width / height
+  svg.attr("viewBox", "0 0 #{width} #{height}")
+  svg.attr("preserveAspectRatio", "xMidYMid")
+  data = [{id:'inner'},{id:'outer'}]
+
+  svg.select(clipId)
+    .append("circle")
+    .attr('cx', width / 2)
+    .attr('cy', height / 2)
+
+  animate = () ->
+    svg.select(clipId).selectAll("circle")
+      .attr("r", 0)
+  
+    svg.select(clipId).selectAll("circle")
+      .transition()
+      .duration(1200)
+      .ease("exp-in")
+      .attr("r", (d) -> width)
+      .transition()
+      .duration(1200)
+      .ease("exp-out")
+      .attr("r", 0)
+    svg.select("#bigtext")
+      .transition()
+      .duration(1200)
+      .ease("exp-out")
+      .attr("opacity", 1)
+      .transition()
+      .duration(1200)
+      .ease("exp-in")
+      .attr("opacity", 0)
+
+    timeout = setTimeout(animate, 3000)
+
+  animate()
+
+  resize = () ->
+    p = svg.node().parentNode
+    targetWidth = +d3.select(p).style("width").replace("px","")
+
+    svg.attr("width", targetWidth)
+    svg.attr("height", targetWidth / aspect)
+
+  resize()
+animateCircle("#title3", "#path3")
 </script>
 
     </div>
